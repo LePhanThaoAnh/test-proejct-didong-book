@@ -2,8 +2,8 @@
 
 Bài tập thực hành CT484, HK2 2023-2024
 
-**MSSV**: ...
+**MSSV**: B2005702
 
-**Họ tên SV**: ...
+**Họ tên SV**: Lê Phan Thảo Anh
 
-**Nhóm học phần**: ...
+**Nhóm học phần**: 02
