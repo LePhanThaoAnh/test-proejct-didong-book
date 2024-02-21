@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         // child: ProductDetailScreen(ProductsManager().items[0]),
         // child: ProductsOverviewScreen(),
         // child: UserProductsScreen(),
-      , child: CartScreen(),
+        child: CartScreen(),
       ),
     );
   }
