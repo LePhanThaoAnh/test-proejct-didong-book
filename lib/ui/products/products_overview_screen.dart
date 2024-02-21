@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/ui/products/products_grid.dart';
 
-import '../product_grid_tile.dart';
+import 'product_grid_tile.dart';
 
 enum FilterOptions { favorites, all }
 

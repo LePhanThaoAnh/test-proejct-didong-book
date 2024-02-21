@@ -11,7 +11,11 @@ class UserProductsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Your Products'),
         actions: <Widget>[
-          AddUserProductButton(),
+          AddUserProductButton(
+            onPressed: (){
+              print('Go to edit product screen');
+            },
+          ),
         ],
       ),
       body: const UserProductList(),

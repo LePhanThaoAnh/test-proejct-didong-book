@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'products_manager.dart';
-import '../product_grid_tile.dart';
+import 'product_grid_tile.dart';
 
 class ProductGrid extends StatelessWidget {
   final bool showFavorites;
