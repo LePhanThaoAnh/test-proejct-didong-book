@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/ui/cart/cart_screen.dart';
+import 'package:myshop/ui/orders/orders_screen.dart';
 import 'ui/products/user_products_screen.dart';
 import 'ui/products/product_detail_screen.dart';
 import 'ui/products/products_manager.dart';
@@ -48,7 +49,8 @@ class MyApp extends StatelessWidget {
         // child: ProductDetailScreen(ProductsManager().items[0]),
         // child: ProductsOverviewScreen(),
         // child: UserProductsScreen(),
-        child: CartScreen(),
+        // child: CartScreen(),
+        child: OrderScreen(),
       ),
     );
   }
