@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/ui/products/products_grid.dart';
+import '../shared/app_drawer.dart';
 
 import 'product_grid_tile.dart';
 
@@ -34,11 +35,12 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           ),
           ShoppingCartButton(
             onPressed: () {
-              print('Go to cart screen');
+              // Navigator.of(context).pushNamed(CartScreen.routeName);
             },
           ),
         ],
       ),
+      drawer: const AppDrawer(),
       body: ProductGrid(_showOnlyFavorites),
     );
   }
