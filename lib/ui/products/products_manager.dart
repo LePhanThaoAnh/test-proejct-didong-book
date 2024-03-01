@@ -9,7 +9,7 @@ class ProductsManager {
       price: 29.99,
       imageUrl:
           'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
-      isFavorite: false,
+      isFavorite: true,
     ),
     Product(
       id: 'p2',
@@ -27,7 +27,7 @@ class ProductsManager {
       price: 19.99,
       imageUrl:
           'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
-      isFavorite: false,
+      isFavorite: true,
     ),
     Product(
       id: 'p4',

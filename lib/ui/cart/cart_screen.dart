@@ -17,7 +17,7 @@ class CartScreen extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          CartSummarry(
+          CartSummary(
             cart: cart,
             onOrderNowPressed: () {
               print('An order has been added');
@@ -43,15 +43,15 @@ class CartItemList extends StatelessWidget {
       children: cart.productEntries
           .map(
             (entry) =>
-                CartItemCart(productId: entry.key, cartItem: entry.value),
+                CartItemCard(productId: entry.key, cartItem: entry.value),
           )
           .toList(),
     );
   }
 }
 
-class CartSummarry extends StatelessWidget {
-  const CartSummarry({
+class CartSummary extends StatelessWidget {
+  const CartSummary({
     super.key,
     required this.cart,
     this.onOrderNowPressed,

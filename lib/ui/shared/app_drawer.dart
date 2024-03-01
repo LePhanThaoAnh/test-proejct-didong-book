@@ -41,14 +41,14 @@ class AppDrawer extends StatelessWidget {
                   .pushReplacementNamed(UserProductsScreen.routeName);
             },
           ),
-          // const Divider(),
-          // ListTile(
-          //   leading: const Icon(Icons.shopping_cart),
-          //   title: const Text('Cart Products'),
-          //   onTap: () {
-          //     Navigator.of(context).pushReplacementNamed(CartScreen.routeName);
-          //   },
-          // ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.shopping_cart),
+            title: const Text('Cart Products'),
+            onTap: () {
+              Navigator.of(context).pushReplacementNamed(CartScreen.routeName);
+            },
+          ),
         ],
       ),
     );

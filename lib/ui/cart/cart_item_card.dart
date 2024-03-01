@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import '../../models/cart_item.dart';
 import '../shared/dialog_utils.dart';
 
-class CartItemCart extends StatelessWidget {
+class CartItemCard extends StatelessWidget {
   final String productId;
   final CartItem cartItem;
 
-  const CartItemCart({
+  const CartItemCard({
     required this.productId,
     required this.cartItem,
     super.key,

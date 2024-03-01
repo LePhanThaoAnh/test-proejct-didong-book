@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../models/product.dart';
+import '../shared/app_drawer.dart';
+import '../cart/cart_manager.dart';
+import '../cart/cart_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   static const routeName = '/product-detail';
@@ -40,8 +43,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 print('Go to favorite screen');
               },
             ),
+            HomeButton(
+              onPressed: () {
+                // Chuyển đến trang Home
+                Navigator.of(context).pushNamed('/');
+              },
+            ),
+            ShoppingButton(
+              onPressed: () {
+                // Chuyển đến trang CartScreen
+                Navigator.of(context).pushNamed(CartScreen.routeName);
+              },
+            ),
           ],
         ),
+        drawer: const AppDrawer(),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -115,6 +131,38 @@ class _FavoriteButtonState extends State<FavoriteButton> {
       icon: Icon(
         _isFavorite ? Icons.favorite : Icons.favorite_border,
       ),
+    );
+  }
+}
+
+class HomeButton extends StatelessWidget {
+  const HomeButton({super.key, this.onPressed});
+
+  final void Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(
+        Icons.shop,
+      ),
+      onPressed: onPressed,
+    );
+  }
+}
+
+class ShoppingButton extends StatelessWidget {
+  const ShoppingButton({super.key, this.onPressed});
+
+  final void Function()? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(
+        Icons.shopping_cart,
+      ),
+      onPressed: onPressed,
     );
   }
 }
