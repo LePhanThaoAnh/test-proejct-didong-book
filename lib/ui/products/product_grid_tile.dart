@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:myshop/ui/products/product_detail_screen.dart';
-
 import '../../../models/product.dart';
 
 class ProductGridTile extends StatelessWidget {
@@ -17,9 +16,10 @@ class ProductGridTile extends StatelessWidget {
       child: GridTile(
         footer: ProductGridFooter(
           product: product,
-          // onFavoritePressed: () {
-          //   print('Toggle a favorite product');
-          // },
+          onFavoritePressed: () {
+            // Nghịch đảo giá trị isFavorite của product
+            product.isFavorite = !product.isFavorite;
+          },
           onAddToCartPressed: () {
             print('Add item to cart');
           },
@@ -41,49 +41,43 @@ class ProductGridTile extends StatelessWidget {
   }
 }
 
-class ProductGridFooter extends StatefulWidget {
-  const ProductGridFooter({
+class ProductGridFooter extends StatelessWidget {
+  ProductGridFooter({
     super.key,
     required this.product,
-    // this.onFavoritePressed,
+    this.onFavoritePressed,
     this.onAddToCartPressed,
   });
 
   final Product product;
-  // final void Function()? onFavoritePressed;
+  final void Function()? onFavoritePressed;
   final void Function()? onAddToCartPressed;
-
-  @override
-  State<ProductGridFooter> createState() => _ProductGridFooterState();
-}
-
-class _ProductGridFooterState extends State<ProductGridFooter> {
-  bool _isFavorite = false;
 
   @override
   Widget build(BuildContext context) {
     return GridTileBar(
       backgroundColor: Colors.black87,
-      leading: IconButton(
-        icon: Icon(
-          _isFavorite ? Icons.favorite : Icons.favorite_border,
-        ),
-        color: Theme.of(context).colorScheme.secondary,
-        onPressed: () {
-          setState(() {
-            _isFavorite = !_isFavorite;
-          });
+      leading: ValueListenableBuilder<bool>(
+        valueListenable: product.isFavoriteListenable,
+        builder: (ctx, isFavorite, child) {
+          return IconButton(
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+            ),
+            color: Theme.of(context).colorScheme.secondary,
+            onPressed: onFavoritePressed,
+          );
         },
       ),
       title: Text(
-        widget.product.title,
+        product.title,
         textAlign: TextAlign.center,
       ),
       trailing: IconButton(
         icon: const Icon(
           Icons.shopping_cart,
         ),
-        onPressed: widget.onAddToCartPressed,
+        onPressed: onAddToCartPressed,
         color: Theme.of(context).colorScheme.secondary,
       ),
     );
