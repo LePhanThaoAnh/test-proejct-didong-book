@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/product.dart';
+import 'products_manager.dart';
+import 'package:provider/provider.dart';
 
 class UserProductListTile extends StatelessWidget {
   final Product product;
@@ -26,12 +28,14 @@ class UserProductListTile extends StatelessWidget {
             ),
             DeleteUserProductButton(
               onPressed: () {
+                // Đọc ra ProductsManager để xóa product
+                context.read<ProductsManager>().deleteProduct(product.id!);
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
                     const SnackBar(
                       content: Text(
-                        'Delete a product',
+                        'Product deleted',
                         textAlign: TextAlign.center,
                       ),
                     ),
