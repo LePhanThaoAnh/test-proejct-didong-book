@@ -4,6 +4,7 @@ import 'package:myshop/ui/cart/cart_screen.dart';
 import 'package:myshop/ui/orders/orders_screen.dart';
 import 'ui/products/products_manager.dart';
 import 'ui/cart/cart_manager.dart';
+import 'ui/orders/order_manager.dart';
 import 'ui/screens.dart';
 
 void main() {
@@ -49,6 +50,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (ctx) => CartManager(),
         ),
+        ChangeNotifierProvider(
+          create: (ctx) => OrdersManager(),
+        ),
       ],
       child: MaterialApp(
         title: 'MyShop',
@@ -79,12 +83,23 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: (settings) {
           if (settings.name == ProductDetailScreen.routeName) {
             final productId = settings.arguments as String;
+            // return MaterialPageRoute(
+            //   settings: settings,
+            //   builder: (ctx) {
+            //     return SafeArea(
+            //       child: ProductDetailScreen(
+            //         ctx.read<ProductsManager>().findById(productId)!,
+            //       ),
+            //     );
+            //   },
+            // );
             return MaterialPageRoute(
-              settings: settings,
               builder: (ctx) {
                 return SafeArea(
-                  child: ProductDetailScreen(
-                    ctx.read<ProductsManager>().findById(productId)!,
+                  child: EditProductScreen(
+                    productId != null
+                        ? ctx.read<ProductsManager>().findById(productId)
+                        : null,
                   ),
                 );
               },
