@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
+import 'cart_manager.dart';
 import '../../models/cart_item.dart';
 import '../shared/dialog_utils.dart';
 
@@ -39,7 +40,8 @@ class CartItemCard extends StatelessWidget {
         );
       },
       onDismissed: (direction) {
-        print('Cart item dismissed');
+        // Xóa sản phẩm khỏi giỏ hàng
+        context.read<CartManager>().clearItem(productId);
       },
       child: ItemInfoCard(cartItem),
     );

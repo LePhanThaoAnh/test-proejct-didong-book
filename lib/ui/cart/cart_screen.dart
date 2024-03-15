@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'cart_manager.dart';
 import 'cart_item_card.dart';
+import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
   static const routeName = '/cart';
@@ -9,7 +10,7 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cart = CartMangaer();
+    final cart = context.watch<CartManager>();
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +36,7 @@ class CartScreen extends StatelessWidget {
 
 class CartItemList extends StatelessWidget {
   const CartItemList(this.cart, {super.key});
-  final CartMangaer cart;
+  final CartManager cart;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +58,7 @@ class CartSummary extends StatelessWidget {
     this.onOrderNowPressed,
   });
 
-  final CartMangaer cart;
+  final CartManager cart;
   final void Function()? onOrderNowPressed;
 
   @override

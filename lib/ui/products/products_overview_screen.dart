@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'products_grid.dart';
 import '../shared/app_drawer.dart';
-
+import 'package:provider/provider.dart';
 import '../cart/cart_manager.dart';
 import 'top_right_badge.dart';
 import 'product_grid_tile.dart';
@@ -81,14 +81,19 @@ class ShoppingCartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TopRightBadge(
-      data: CartMangaer().productCount,
-      child: IconButton(
-        icon: const Icon(
-          Icons.shopping_cart,
-        ),
-        onPressed: onPressed,
-      ),
+    // Truy xuất CartManager thông qua widget Consumer
+    return Consumer<CartManager>(
+      builder: (ctx, cartManager, child) {
+        return TopRightBadge(
+          data: cartManager.productCount,
+          child: IconButton(
+            icon: const Icon(
+              Icons.shopping_cart,
+            ),
+            onPressed: onPressed,
+          ),
+        );
+      },
     );
   }
 }
