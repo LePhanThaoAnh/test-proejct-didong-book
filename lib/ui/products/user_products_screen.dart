@@ -36,6 +36,7 @@ class UserProductList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final productsManager = ProductsManager();
 // Dùng Consumer để truy xuất và lắng nghe báo hiệu
 // thay đổi trạng thái từ ProductsManager
     return Consumer<ProductsManager>(

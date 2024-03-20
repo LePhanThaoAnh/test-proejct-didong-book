@@ -6,6 +6,7 @@ import 'products_manager.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
+
   EditProductScreen(
     Product? product, {
     super.key,
@@ -135,7 +136,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       autofocus: true,
       validator: (value) {
         if (value!.isEmpty) {
-          return 'Please privide a value';
+          return 'Please provide a value';
         }
         return null;
       },
@@ -219,7 +220,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   TextFormField _buildImageURLField() {
     return TextFormField(
-      initialValue: _editedProduct.description,
       decoration: const InputDecoration(labelText: 'Image URL'),
       keyboardType: TextInputType.url,
       textInputAction: TextInputAction.done,

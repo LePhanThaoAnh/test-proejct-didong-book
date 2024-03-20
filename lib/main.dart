@@ -83,16 +83,18 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: (settings) {
           if (settings.name == ProductDetailScreen.routeName) {
             final productId = settings.arguments as String;
-            // return MaterialPageRoute(
-            //   settings: settings,
-            //   builder: (ctx) {
-            //     return SafeArea(
-            //       child: ProductDetailScreen(
-            //         ctx.read<ProductsManager>().findById(productId)!,
-            //       ),
-            //     );
-            //   },
-            // );
+            return MaterialPageRoute(
+              settings: settings,
+              builder: (ctx) {
+                return SafeArea(
+                  child: ProductDetailScreen(
+                      ctx.read<ProductsManager>().findById(productId)!),
+                );
+              },
+            );
+          }
+          if (settings.name == EditProductScreen.routeName) {
+            final productId = settings.arguments as String?;
             return MaterialPageRoute(
               builder: (ctx) {
                 return SafeArea(

@@ -63,16 +63,15 @@ class ProductGridTile extends StatelessWidget {
 }
 
 class ProductGridFooter extends StatelessWidget {
-  ProductGridFooter({
+  final Product product;
+  final void Function()? onFavoritePressed;
+  final void Function()? onAddToCartPressed;
+  const ProductGridFooter({
     super.key,
     required this.product,
     this.onFavoritePressed,
     this.onAddToCartPressed,
   });
-
-  final Product product;
-  final void Function()? onFavoritePressed;
-  final void Function()? onAddToCartPressed;
 
   @override
   Widget build(BuildContext context) {
