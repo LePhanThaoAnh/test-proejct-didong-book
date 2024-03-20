@@ -3,6 +3,7 @@ import 'package:myshop/ui/products/product_detail_screen.dart';
 import '../../../models/product.dart';
 import 'package:provider/provider.dart';
 import '../cart/cart_manager.dart';
+import 'products_manager.dart';
 
 class ProductGridTile extends StatelessWidget {
   const ProductGridTile(
@@ -20,7 +21,7 @@ class ProductGridTile extends StatelessWidget {
           product: product,
           onFavoritePressed: () {
             // Nghịch đảo giá trị isFavorite của product
-            product.isFavorite = !product.isFavorite;
+            context.read<ProductsManager>().toggleFavoriteStatus(product);
           },
           onAddToCartPressed: () {
             // Đọc ra CartManager dùng context.read

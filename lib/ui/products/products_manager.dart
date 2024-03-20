@@ -43,6 +43,26 @@ class ProductsManager with ChangeNotifier {
     ),
   ];
 
+  int get itemCount {
+    return _items.length;
+  }
+
+  List<Product> get items {
+    return [..._items];
+  }
+
+  List<Product> get favoriteItems {
+    return _items.where((item) => item.isFavorite).toList();
+  }
+
+  Product? findById(String id) {
+    try {
+      return _items.firstWhere((item) => item.id == id);
+    } catch (error) {
+      return null;
+    }
+  }
+
   final ProductsService _productsService;
   ProductsManager([AuthToken? authToken])
       : _productsService = ProductsService(authToken);
@@ -93,23 +113,12 @@ class ProductsManager with ChangeNotifier {
     }
   }
 
-  int get itemCount {
-    return _items.length;
-  }
+  Future<void> toggleFavoriteStatus(Product product) async {
+    final saveStatus = product.isFavorite;
+    product.isFavorite = !saveStatus;
 
-  List<Product> get items {
-    return [..._items];
-  }
-
-  List<Product> get favoriteItems {
-    return _items.where((item) => item.isFavorite).toList();
-  }
-
-  Product? findById(String id) {
-    try {
-      return _items.firstWhere((item) => item.id == id);
-    } catch (error) {
-      return null;
+    if (!await _productsService.saveFavoriteStatus(product)) {
+      product.isFavorite = saveStatus;
     }
   }
 
@@ -130,10 +139,10 @@ class ProductsManager with ChangeNotifier {
   //   }
   // }
 
-  void toggleFavoriteStatus(Product product) {
-    final saveStatus = product.isFavorite;
-    product.isFavorite = !saveStatus;
-  }
+  // void toggleFavoriteStatus(Product product) {
+  //   final saveStatus = product.isFavorite;
+  //   product.isFavorite = !saveStatus;
+  // }
 
   // void deleteProduct(String id) {
   //   final index = _items.indexWhere((item) => item.id == id);
