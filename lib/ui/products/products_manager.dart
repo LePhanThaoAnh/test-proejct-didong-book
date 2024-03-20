@@ -1,8 +1,10 @@
 import '../../models/product.dart';
+import '../../models/auth_token.dart';
 import 'package:flutter/foundation.dart';
+import '../../services/products_service.dart';
 
 class ProductsManager with ChangeNotifier {
-  final List<Product> _items = [
+  List<Product> _items = [
     Product(
       id: 'p1',
       title: 'Red Shirt',
@@ -40,6 +42,35 @@ class ProductsManager with ChangeNotifier {
       isFavorite: false,
     ),
   ];
+
+  final ProductsService _productsService;
+  ProductsManager([AuthToken? authToken])
+      : _productsService = ProductsService(authToken);
+
+  set authToken(AuthToken? authToken) {
+    _productsService.AuthToken = authToken;
+  }
+
+  Future<void> fetchProducts() async {
+    _items = await _productsService.fetchProducts();
+    notifyListeners();
+  }
+
+  Future<void> fetchUserProducts() async {
+    _items = await _productsService.fetchProducts(
+      filteredByUser: true,
+    );
+    notifyListeners();
+  }
+
+  Future<void> addProducts(Product product) async {
+    final newProduct = await _productsService.addProduct(product);
+    if (newProduct != null) {
+      _items.add(newProduct);
+      notifyListeners();
+    }
+  }
+
   int get itemCount {
     return _items.length;
   }
