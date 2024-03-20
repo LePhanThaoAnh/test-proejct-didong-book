@@ -60,4 +60,31 @@ class ProductsService extends FirebaseService {
       return null;
     }
   }
+
+  Future<bool> updateProduct(Product product) async {
+    try {
+      await httpFetch(
+        '$databaseUrl/products/${product.id}.json?auth=$token',
+        method: HttpMethod.patch,
+        body: jsonEncode(product.toJson()),
+      );
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  Future<bool> deleteProduct(String id) async {
+    try {
+      await httpFetch(
+        '$databaseUrl/products/$id.json?auth=$token',
+        method: HttpMethod.delete,
+      );
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
 }

@@ -26,7 +26,20 @@ class UserProductsScreen extends StatelessWidget {
         ],
       ),
       drawer: const AppDrawer(),
-      body: const UserProductList(),
+      body: FutureBuilder(
+        future: context.read<ProductsManager>().fetchUserProducts(),
+        builder: (ctx, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return RefreshIndicator(
+            onRefresh: () => ctx.read<ProductsManager>().fetchUserProducts(),
+            child: const UserProductList(),
+          );
+        },
+      ),
     );
   }
 }
