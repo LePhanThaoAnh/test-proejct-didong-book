@@ -244,22 +244,4 @@ class _EditProductScreenState extends State<EditProductScreen> {
   // Future<void> _saveForm() async {
 
   // }
-
-  Future<void> showErrorDialog(BuildContext context, String message) {
-    return showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        icon: const Icon(Icons.error),
-        title: const Text('An Error occurred'),
-        content: Text(message),
-        actions: <Widget>[
-          ActionButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-            },
-          ),
-        ],
-      ),
-    );
-  }
 }
