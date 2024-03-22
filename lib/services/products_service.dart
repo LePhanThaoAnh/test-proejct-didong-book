@@ -26,7 +26,7 @@ class ProductsService extends FirebaseService {
         final isFavorite = (userFavoritesMap == null)
             ? false
             : (userFavoritesMap[productId] ?? false);
-        product.add(
+        products.add(
           Product.fromJson({
             'id': productId,
             ...product,
