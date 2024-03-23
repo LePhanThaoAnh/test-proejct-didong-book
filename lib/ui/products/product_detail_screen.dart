@@ -3,14 +3,18 @@ import '../../models/product.dart';
 import '../shared/app_drawer.dart';
 import '../cart/cart_manager.dart';
 import '../cart/cart_screen.dart';
+import 'products_manager.dart';
+import 'package:provider/provider.dart';
+import 'top_right_badge.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  static const routeName = '/product-detail';
-
   ProductDetailScreen(
     this.product, {
     super.key,
   });
+
+  static const routeName = '/product-detail';
+
   final Product product;
 
   @override
@@ -35,103 +39,119 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.product.title),
-          actions: <Widget>[
-            FavoriteButton(
-              onPressed: () {
-                print('Go to favorite screen');
-              },
+      appBar: AppBar(
+        title: Text(widget.product.title),
+        actions: <Widget>[
+          FavoriteButton(
+            product: widget.product,
+            onFavoritePressed: () {
+              // Nghịch đảo giá trị isFavorite của product
+              context
+                  .read<ProductsManager>()
+                  .toggleFavoriteStatus(widget.product);
+            },
+          ),
+          HomeButton(
+            onPressed: () {
+              // Chuyển đến trang Home
+              Navigator.of(context).pushNamed('/');
+            },
+          ),
+        ],
+      ),
+      drawer: const AppDrawer(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 300,
+              width: double.infinity,
+              child: Image.network(widget.product.imageUrl, fit: BoxFit.cover),
             ),
-            HomeButton(
-              onPressed: () {
-                // Chuyển đến trang Home
-                Navigator.of(context).pushNamed('/');
-              },
+            const SizedBox(height: 10),
+            Text(
+              '\$${widget.product.price}',
+              style: const TextStyle(color: Colors.grey, fontSize: 20),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              width: double.infinity,
+              child: Text(
+                widget.product.description,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                ElevatedButton(
+                    onPressed: _decreaseCount, child: const Icon(Icons.remove)),
+                Text(
+                  '$_count',
+                ),
+                ElevatedButton(
+                    onPressed: _increaseCount, child: const Icon(Icons.add)),
+              ],
             ),
             ShoppingButton(
-              onPressed: () {
-                // Chuyển đến trang CartScreen
-                Navigator.of(context).pushNamed(CartScreen.routeName);
+              onAddToCartPressed: () {
+                // Đọc ra CartManager dùng context.read
+                final cart = context.read<CartManager>();
+                cart.addItem(widget.product);
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      content: const Text(
+                        'Item added to cart',
+                      ),
+                      duration: const Duration(seconds: 2),
+                      action: SnackBarAction(
+                        label: 'UNDO',
+                        onPressed: () {
+                          // Xóa product nếu undo
+                          cart.removeItem(widget.product.id!);
+                        },
+                      ),
+                    ),
+                  );
               },
             ),
           ],
         ),
-        drawer: const AppDrawer(),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 300,
-                width: double.infinity,
-                child:
-                    Image.network(widget.product.imageUrl, fit: BoxFit.cover),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                '\$${widget.product.price}',
-                style: const TextStyle(color: Colors.grey, fontSize: 20),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                width: double.infinity,
-                child: Text(
-                  widget.product.description,
-                  textAlign: TextAlign.center,
-                  softWrap: true,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  ElevatedButton(
-                      onPressed: _decreaseCount,
-                      child: const Icon(Icons.remove)),
-                  Text(
-                    '$_count',
-                  ),
-                  ElevatedButton(
-                      onPressed: _increaseCount, child: const Icon(Icons.add)),
-                ],
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.shopping_cart,
-                ),
-                onPressed: () {},
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ],
-          ),
-        ));
+      ),
+    );
   }
 }
 
-class FavoriteButton extends StatefulWidget {
-  const FavoriteButton({super.key, this.onPressed});
+class FavoriteButton extends StatelessWidget {
+  const FavoriteButton({
+    super.key,
+    required this.product,
+    this.onFavoritePressed,
+  });
 
-  final void Function()? onPressed;
+  final void Function()? onFavoritePressed;
+  final Product product;
 
-  @override
-  State<FavoriteButton> createState() => _FavoriteButtonState();
-}
-
-class _FavoriteButtonState extends State<FavoriteButton> {
-  bool _isFavorite = false;
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        setState(() {
-          _isFavorite = !_isFavorite;
-        });
+    return GridTileBar(
+        leading: ValueListenableBuilder<bool>(
+      valueListenable: product.isFavoriteListenable,
+      builder: (ctx, isFavorite, child) {
+        return IconButton(
+          icon: Icon(
+            isFavorite ? Icons.favorite : Icons.favorite_border,
+          ),
+          color: Theme.of(context).colorScheme.secondary,
+          onPressed: onFavoritePressed,
+        );
       },
-      icon: Icon(
-        _isFavorite ? Icons.favorite : Icons.favorite_border,
-      ),
-    );
+    ));
   }
 }
 
@@ -152,8 +172,13 @@ class HomeButton extends StatelessWidget {
 }
 
 class ShoppingButton extends StatelessWidget {
-  const ShoppingButton({super.key, this.onPressed});
+  const ShoppingButton({
+    super.key,
+    this.onPressed,
+    this.onAddToCartPressed,
+  });
 
+  final void Function()? onAddToCartPressed;
   final void Function()? onPressed;
 
   @override
@@ -162,7 +187,8 @@ class ShoppingButton extends StatelessWidget {
       icon: const Icon(
         Icons.shopping_cart,
       ),
-      onPressed: onPressed,
+      onPressed: onAddToCartPressed,
+      color: Theme.of(context).colorScheme.secondary,
     );
   }
 }
