@@ -29,4 +29,21 @@ class OrderItem {
       dateTime: dateTime ?? this.dateTime,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'amount': amount,
+      'products': products,
+      'dateTime': dateTime,
+    };
+  }
+
+  static OrderItem fromJson(Map<String, dynamic> json) {
+    return OrderItem(
+      id: json['id'],
+      amount: json['amount'],
+      products: json['products'],
+      dateTime: json['dateTime'],
+    );
+  }
 }
