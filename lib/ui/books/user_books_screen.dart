@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
-import 'user_product_list_tile.dart';
-import 'products_manager.dart';
-import 'edit_product_screen.dart';
-import 'add_product_screen.dart';
+import 'user_book_list_tile.dart';
+import 'books_manager.dart';
+import 'edit_book_screen.dart';
+import 'add_book_screen.dart';
 import '../shared/app_drawer.dart';
 import 'package:provider/provider.dart';
 
-class UserProductsScreen extends StatelessWidget {
-  static const routeName = '/user-products';
-  const UserProductsScreen({super.key});
+class UserBooksScreen extends StatelessWidget {
+  static const routeName = '/user-books';
+  const UserBooksScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Products'),
+        title: const Text('Your Books'),
         actions: <Widget>[
-          AddUserProductButton(
+          AddUserBookButton(
             onPressed: () {
-              // Chuyển đến trang EditProductScreen
+              // Chuyển đến trang EditBookScreen
               Navigator.of(context).pushNamed(
-                AddProductScreen.routeName,
+                EditBookScreen.routeName,
               );
             },
           ),
@@ -28,7 +28,7 @@ class UserProductsScreen extends StatelessWidget {
       ),
       drawer: const AppDrawer(),
       body: FutureBuilder(
-        future: context.read<ProductsManager>().fetchUserProducts(),
+        future: context.read<BooksManager>().fetchUserBooks(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -36,8 +36,8 @@ class UserProductsScreen extends StatelessWidget {
             );
           }
           return RefreshIndicator(
-            onRefresh: () => ctx.read<ProductsManager>().fetchUserProducts(),
-            child: const UserProductList(),
+            onRefresh: () => ctx.read<BooksManager>().fetchUserBooks(),
+            child: const UserBookList(),
           );
         },
       ),
@@ -45,22 +45,22 @@ class UserProductsScreen extends StatelessWidget {
   }
 }
 
-class UserProductList extends StatelessWidget {
-  const UserProductList({super.key});
+class UserBookList extends StatelessWidget {
+  const UserBookList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final productsManager = ProductsManager();
+    final booksManager = BooksManager();
 // Dùng Consumer để truy xuất và lắng nghe báo hiệu
-// thay đổi trạng thái từ ProductsManager
-    return Consumer<ProductsManager>(
-      builder: (ctx, productsManager, child) {
+// thay đổi trạng thái từ BooksManager
+    return Consumer<BooksManager>(
+      builder: (ctx, booksManager, child) {
         return ListView.builder(
-          itemCount: productsManager.itemCount,
+          itemCount: booksManager.itemCount,
           itemBuilder: (ctx, i) => Column(
             children: [
-              UserProductListTile(
-                productsManager.items[i],
+              UserBookListTile(
+                booksManager.items[i],
               ),
               const Divider(),
             ],
@@ -71,8 +71,8 @@ class UserProductList extends StatelessWidget {
   }
 }
 
-class AddUserProductButton extends StatelessWidget {
-  const AddUserProductButton({super.key, this.onPressed});
+class AddUserBookButton extends StatelessWidget {
+  const AddUserBookButton({super.key, this.onPressed});
 
   final void Function()? onPressed;
 

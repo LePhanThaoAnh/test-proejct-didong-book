@@ -4,7 +4,7 @@ import 'package:myshop/ui/auth/auth_manager.dart';
 import '../auth/auth_manager.dart';
 import '../orders/orders_screen.dart';
 import '../cart/cart_screen.dart';
-import '../products/user_products_screen.dart';
+import '../books/user_books_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -37,16 +37,16 @@ class AppDrawer extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.edit),
-            title: const Text('Manage Products'),
+            title: const Text('Manage Books'),
             onTap: () {
               Navigator.of(context)
-                  .pushReplacementNamed(UserProductsScreen.routeName);
+                  .pushReplacementNamed(UserBooksScreen.routeName);
             },
           ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.shopping_cart),
-            title: const Text('Cart Products'),
+            title: const Text('Cart Books'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed(CartScreen.routeName);
             },

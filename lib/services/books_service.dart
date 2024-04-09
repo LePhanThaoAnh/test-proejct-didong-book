@@ -2,58 +2,58 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../models/auth_token.dart';
 import 'dart:convert';
-import '../models/product.dart';
+import '../models/book.dart';
 import 'firebase_service.dart';
 
-class ProductsService extends FirebaseService {
-  ProductsService([AuthToken? authToken]) : super(authToken);
+class BooksService extends FirebaseService {
+  BooksService([AuthToken? authToken]) : super(authToken);
 
-  Future<List<Product>> fetchProducts({bool filteredByUser = false}) async {
-    final List<Product> products = [];
+  Future<List<Book>> fetchBooks({bool filteredByUser = false}) async {
+    final List<Book> books = [];
     try {
       final filters =
           filteredByUser ? 'orderBy = "creatorId"&equalTo = "$userId"' : '';
 
-      final productsMap = await httpFetch(
-        '$databaseUrl/products.json?auth=$token&$filters',
+      final booksMap = await httpFetch(
+        '$databaseUrl/books.json?auth=$token&$filters',
       ) as Map<String, dynamic>?;
 
       final userFavoritesMap = await httpFetch(
         '$databaseUrl/userFavorites/$userId.json?auth=$token',
       ) as Map<String, dynamic>?;
 
-      productsMap?.forEach((productId, product) {
+      booksMap?.forEach((bookId, book) {
         final isFavorite = (userFavoritesMap == null)
             ? false
-            : (userFavoritesMap[productId] ?? false);
-        products.add(
-          Product.fromJson({
-            'id': productId,
-            ...product,
+            : (userFavoritesMap[bookId] ?? false);
+        books.add(
+          Book.fromJson({
+            'id': bookId,
+            ...book,
           }).copyWith(isFavorite: isFavorite),
         );
       });
-      return products;
+      return books;
     } catch (e) {
       print(e);
-      return products;
+      return books;
     }
   }
 
-  Future<Product?> addProduct(Product product) async {
+  Future<Book?> addBook(Book book) async {
     try {
-      final newProduct = await httpFetch(
-        '$databaseUrl/products.json?auth=$token',
+      final newBook = await httpFetch(
+        '$databaseUrl/books.json?auth=$token',
         method: HttpMethod.post,
         body: jsonEncode(
-          product.toJson()
+          book.toJson()
             ..addAll({
               'creatorId': userId,
             }),
         ),
       ) as Map<String, dynamic>?;
-      return product.copyWith(
-        id: newProduct!['name'],
+      return book.copyWith(
+        id: newBook!['name'],
       );
     } catch (e) {
       print(e);
@@ -61,12 +61,12 @@ class ProductsService extends FirebaseService {
     }
   }
 
-  Future<bool> updateProduct(Product product) async {
+  Future<bool> updateBook(Book book) async {
     try {
       await httpFetch(
-        '$databaseUrl/products/${product.id}.json?auth=$token',
+        '$databaseUrl/books/${book.id}.json?auth=$token',
         method: HttpMethod.patch,
-        body: jsonEncode(product.toJson()),
+        body: jsonEncode(book.toJson()),
       );
       return true;
     } catch (e) {
@@ -75,10 +75,10 @@ class ProductsService extends FirebaseService {
     }
   }
 
-  Future<bool> deleteProduct(String id) async {
+  Future<bool> deleteBook(String id) async {
     try {
       await httpFetch(
-        '$databaseUrl/products/$id.json?auth=$token',
+        '$databaseUrl/books/$id.json?auth=$token',
         method: HttpMethod.delete,
       );
       return true;
@@ -88,12 +88,12 @@ class ProductsService extends FirebaseService {
     }
   }
 
-  Future<bool> saveFavoriteStatus(Product product) async {
+  Future<bool> saveFavoriteStatus(Book book) async {
     try {
       await httpFetch(
-        '$databaseUrl/userFavorites/$userId/${product.id}.json?auth=$token',
+        '$databaseUrl/userFavorites/$userId/${book.id}.json?auth=$token',
         method: HttpMethod.put,
-        body: jsonEncode(product.isFavorite),
+        body: jsonEncode(book.isFavorite),
       );
       return true;
     } catch (e) {

@@ -5,11 +5,11 @@ import '../../models/cart_item.dart';
 import '../shared/dialog_utils.dart';
 
 class CartItemCard extends StatelessWidget {
-  final String productId;
+  final String bookId;
   final CartItem cartItem;
 
   const CartItemCard({
-    required this.productId,
+    required this.bookId,
     required this.cartItem,
     super.key,
   });
@@ -41,7 +41,7 @@ class CartItemCard extends StatelessWidget {
       },
       onDismissed: (direction) {
         // Xóa sản phẩm khỏi giỏ hàng
-        context.read<CartManager>().clearItem(productId);
+        context.read<CartManager>().clearItem(bookId);
       },
       child: ItemInfoCard(cartItem),
     );

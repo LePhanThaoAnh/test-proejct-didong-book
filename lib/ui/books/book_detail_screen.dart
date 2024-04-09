@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import '../../models/product.dart';
+import '../../models/book.dart';
 import '../shared/app_drawer.dart';
 import '../cart/cart_manager.dart';
 import '../cart/cart_screen.dart';
-import 'products_manager.dart';
+import 'books_manager.dart';
 import 'package:provider/provider.dart';
 import 'top_right_badge.dart';
 
-class ProductDetailScreen extends StatefulWidget {
-  ProductDetailScreen(
-    this.product, {
+class BookDetailScreen extends StatefulWidget {
+  BookDetailScreen(
+    this.book, {
     super.key,
   });
 
-  static const routeName = '/product-detail';
+  static const routeName = '/book-detail';
 
-  final Product product;
+  final Book book;
 
   @override
-  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+  State<BookDetailScreen> createState() => _BookDetailScreenState();
 }
 
-class _ProductDetailScreenState extends State<ProductDetailScreen> {
+class _BookDetailScreenState extends State<BookDetailScreen> {
   int _count = 0;
 
   void _increaseCount() {
@@ -40,15 +40,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.product.title),
+        title: Text(widget.book.title),
         actions: <Widget>[
           FavoriteButton(
-            product: widget.product,
+            book: widget.book,
             onFavoritePressed: () {
-              // Nghịch đảo giá trị isFavorite của product
-              context
-                  .read<ProductsManager>()
-                  .toggleFavoriteStatus(widget.product);
+              // Nghịch đảo giá trị isFavorite của book
+              context.read<BooksManager>().toggleFavoriteStatus(widget.book);
             },
           ),
           HomeButton(
@@ -66,19 +64,33 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             SizedBox(
               height: 300,
               width: double.infinity,
-              child: Image.network(widget.product.imageUrl, fit: BoxFit.cover),
+              child: Image.network(widget.book.imageUrl, fit: BoxFit.cover),
             ),
             const SizedBox(height: 10),
             Text(
-              '\$${widget.product.price}',
+              '${widget.book.price}' + ' vnđ',
               style: const TextStyle(color: Colors.grey, fontSize: 20),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Số lượng:' + '${widget.book.quantity}',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Tác giả: ' + widget.book.author,
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            Text(
+              'Thể loại: ' + widget.book.category,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               width: double.infinity,
               child: Text(
-                widget.product.description,
+                widget.book.description,
                 textAlign: TextAlign.center,
                 softWrap: true,
                 style: Theme.of(context).textTheme.titleLarge,
@@ -100,7 +112,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               onAddToCartPressed: () {
                 // Đọc ra CartManager dùng context.read
                 final cart = context.read<CartManager>();
-                cart.addItem(widget.product);
+                cart.addItem(widget.book);
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
@@ -112,8 +124,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       action: SnackBarAction(
                         label: 'UNDO',
                         onPressed: () {
-                          // Xóa product nếu undo
-                          cart.removeItem(widget.product.id!);
+                          // Xóa book nếu undo
+                          cart.removeItem(widget.book.id!);
                         },
                       ),
                     ),
@@ -130,18 +142,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 class FavoriteButton extends StatelessWidget {
   const FavoriteButton({
     super.key,
-    required this.product,
+    required this.book,
     this.onFavoritePressed,
   });
 
   final void Function()? onFavoritePressed;
-  final Product product;
+  final Book book;
 
   @override
   Widget build(BuildContext context) {
     return GridTileBar(
         leading: ValueListenableBuilder<bool>(
-      valueListenable: product.isFavoriteListenable,
+      valueListenable: book.isFavoriteListenable,
       builder: (ctx, isFavorite, child) {
         return IconButton(
           icon: Icon(

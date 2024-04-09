@@ -1,38 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../models/product.dart';
+import '../../models/book.dart';
 import '../shared/dialog_utils.dart';
-import 'products_manager.dart';
+import 'books_manager.dart';
 
-class EditProductScreen extends StatefulWidget {
-  static const routeName = '/edit-product';
+class EditBookScreen extends StatefulWidget {
+  static const routeName = '/edit-book';
 
-  EditProductScreen(
-    Product? product, {
+  EditBookScreen(
+    Book? book, {
     super.key,
   }) {
-    if (product == null) {
-      this.product = Product(
+    if (book == null) {
+      this.book = Book(
         id: null,
         title: '',
         price: 0,
+        quantity: 0,
+        author: '',
         description: '',
+        category: '',
         imageUrl: '',
       );
     } else {
-      this.product = product;
+      this.book = book;
     }
   }
-  late final Product product;
+  late final Book book;
   @override
-  State<EditProductScreen> createState() => _EditProductScreenState();
+  State<EditBookScreen> createState() => _EditBookScreenState();
 }
 
-class _EditProductScreenState extends State<EditProductScreen> {
+class _EditBookScreenState extends State<EditBookScreen> {
   final _imageUrlController = TextEditingController();
   final _imageUrlFocusNode = FocusNode();
   final _editForm = GlobalKey<FormState>();
-  late Product _editedProduct;
+  late Book _editedBook;
   var _isLoading = false;
   bool _isValidImageUrl(String value) {
     return (value.startsWith('http') || value.startsWith('https')) &&
@@ -52,8 +55,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
         setState(() {});
       }
     });
-    _editedProduct = widget.product;
-    _imageUrlController.text = _editedProduct.imageUrl;
+    _editedBook = widget.book;
+    _imageUrlController.text = _editedBook.imageUrl;
     super.initState();
   }
 
@@ -77,11 +80,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
     });
 
     try {
-      final productsManager = context.read<ProductsManager>();
-      if (_editedProduct.id != null) {
-        await productsManager.updateProduct(_editedProduct);
+      final booksManager = context.read<BooksManager>();
+      if (_editedBook.id != null) {
+        await booksManager.updateBook(_editedBook);
       } else {
-        await productsManager.addProduct(_editedProduct);
+        await booksManager.addBook(_editedBook);
       }
     } catch (error) {
       if (mounted) {
@@ -101,7 +104,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Product'),
+        title: const Text('Edit Book'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.save),
@@ -121,8 +124,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   children: <Widget>[
                     _buildTitleField(),
                     _buildPriceField(),
+                    _buildQuantityField(),
                     _buildDescriptionField(),
-                    _buildProductPreview(),
+                    _buildAuthorField(),
+                    _buildCategoryField(),
+                    _buildBookPreview(),
                   ],
                 ),
               ),
@@ -132,7 +138,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   TextFormField _buildTitleField() {
     return TextFormField(
-      initialValue: _editedProduct.title,
+      initialValue: _editedBook.title,
       decoration: const InputDecoration(labelText: 'Title'),
       textInputAction: TextInputAction.next,
       autofocus: true,
@@ -143,14 +149,56 @@ class _EditProductScreenState extends State<EditProductScreen> {
         return null;
       },
       onSaved: (value) {
-        _editedProduct = _editedProduct.copyWith(title: value);
+        _editedBook = _editedBook.copyWith(title: value);
+      },
+    );
+  }
+
+  TextFormField _buildAuthorField() {
+    return TextFormField(
+      initialValue: _editedBook.author,
+      decoration: const InputDecoration(labelText: 'Author'),
+      textInputAction: TextInputAction.next,
+      autofocus: true,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please provide a value';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _editedBook = _editedBook.copyWith(author: value);
+      },
+    );
+  }
+
+  TextFormField _buildQuantityField() {
+    return TextFormField(
+      initialValue: _editedBook.quantity.toString(),
+      decoration: const InputDecoration(labelText: 'Quantity'),
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.number,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter a quantity';
+        }
+        if (double.tryParse(value) == null) {
+          return 'Please enter a valid number';
+        }
+        if (double.parse(value) <= 0) {
+          return 'Please enter a number greater than zero.';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _editedBook = _editedBook.copyWith(quantity: int.parse(value!));
       },
     );
   }
 
   TextFormField _buildPriceField() {
     return TextFormField(
-      initialValue: _editedProduct.price.toString(),
+      initialValue: _editedBook.price.toString(),
       decoration: const InputDecoration(labelText: 'Price'),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.number,
@@ -167,14 +215,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
         return null;
       },
       onSaved: (value) {
-        _editedProduct = _editedProduct.copyWith(price: double.parse(value!));
+        _editedBook = _editedBook.copyWith(price: int.parse(value!));
       },
     );
   }
 
   TextFormField _buildDescriptionField() {
     return TextFormField(
-      initialValue: _editedProduct.description,
+      initialValue: _editedBook.description,
       decoration: const InputDecoration(labelText: 'Description'),
       maxLines: 3,
       keyboardType: TextInputType.multiline,
@@ -188,12 +236,30 @@ class _EditProductScreenState extends State<EditProductScreen> {
         return null;
       },
       onSaved: (value) {
-        _editedProduct = _editedProduct.copyWith(description: value);
+        _editedBook = _editedBook.copyWith(description: value);
       },
     );
   }
 
-  Widget _buildProductPreview() {
+  TextFormField _buildCategoryField() {
+    return TextFormField(
+      initialValue: _editedBook.category,
+      decoration: const InputDecoration(labelText: 'Category'),
+      textInputAction: TextInputAction.next,
+      autofocus: true,
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please provide a value';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        _editedBook = _editedBook.copyWith(category: value);
+      },
+    );
+  }
+
+  Widget _buildBookPreview() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
@@ -238,7 +304,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
         return null;
       },
       onSaved: (value) {
-        _editedProduct = _editedProduct.copyWith(imageUrl: value);
+        _editedBook = _editedBook.copyWith(imageUrl: value);
       },
     );
   }

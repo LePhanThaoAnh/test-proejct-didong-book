@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:myshop/ui/cart/cart_screen.dart';
 import 'package:myshop/ui/orders/orders_screen.dart';
-import 'ui/products/products_manager.dart';
+import 'ui/orders/order_manager.dart';
 import 'ui/cart/cart_manager.dart';
 import 'ui/orders/order_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -49,21 +49,39 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => AuthManager(),
         ),
-        ChangeNotifierProxyProvider<AuthManager, ProductsManager>(
-          create: (ctx) => ProductsManager(),
-          update: (ctx, authManager, productsManager) {
+        ChangeNotifierProxyProvider<AuthManager, BooksManager>(
+          create: (ctx) => BooksManager(),
+          update: (ctx, authManager, booksManager) {
             // Khi authManager có báo hiệu thay đổi thì đọc lại authToken
-            // cho productManager
-            productsManager!.authToken = authManager.authToken;
-            return productsManager;
+            // cho bookManager
+            booksManager!.authToken = authManager.authToken;
+            return booksManager;
           },
         ),
-        ChangeNotifierProvider(
+        ChangeNotifierProxyProvider<AuthManager, CartManager>(
           create: (ctx) => CartManager(),
+          update: (ctx, authManager, cartManager) {
+            // Khi authManager có báo hiệu thay đổi thì đọc lại authToken
+            // cho bookManager
+            cartManager!.authToken = authManager.authToken;
+            return cartManager;
+          },
         ),
-        ChangeNotifierProvider(
-          create: (ctx) => OrdersManager(),
+        ChangeNotifierProxyProvider<AuthManager, OrderManager>(
+          create: (ctx) => OrderManager(),
+          update: (ctx, authManager, ordersManager) {
+            // Khi authManager có báo hiệu thay đổi thì đọc lại authToken
+            // cho bookManager
+            ordersManager!.authToken = authManager.authToken;
+            return ordersManager;
+          },
         ),
+        // ChangeNotifierProvider(
+        //   create: (ctx) => CartManager(),
+        // ),
+        // ChangeNotifierProvider(
+        //   create: (ctx) => OrderManager(),
+        // ),
       ],
       child: Consumer<AuthManager>(builder: (context, authManager, child) {
         return MaterialApp(
@@ -74,7 +92,7 @@ class MyApp extends StatelessWidget {
           //   child: CartScreen(),
           // ),
           home: authManager.isAuth
-              ? const ProductsOverviewScreen()
+              ? const BooksOverviewScreen()
               : FutureBuilder(
                   future: authManager.tryAutoLogin(),
                   builder: (context, snapshot) {
@@ -83,9 +101,9 @@ class MyApp extends StatelessWidget {
                         : const SafeArea(child: AuthScreen());
                   },
                 ),
-          // child: ProductDetailScreen(ProductsManager().items[0]),
-          // child: ProductsOverviewScreen(),
-          // child: UserProductsScreen(),
+          // child: BookDetailScreen(BooksManager().items[0]),
+          // child: BooksOverviewScreen(),
+          // child: UserBooksScreen(),
           // child: CartScreen(),
           // Thuộc tính routes thường dùng khai báo
           // các route không tham số.
@@ -97,31 +115,31 @@ class MyApp extends StatelessWidget {
             OrderScreen.routeName: (ctx) => const SafeArea(
                   child: OrderScreen(),
                 ),
-            UserProductsScreen.routeName: (ctx) => const SafeArea(
-                  child: UserProductsScreen(),
+            UserBooksScreen.routeName: (ctx) => const SafeArea(
+                  child: UserBooksScreen(),
                 ),
           },
           onGenerateRoute: (settings) {
-            if (settings.name == ProductDetailScreen.routeName) {
-              final productId = settings.arguments as String;
+            if (settings.name == BookDetailScreen.routeName) {
+              final bookId = settings.arguments as String;
               return MaterialPageRoute(
                 settings: settings,
                 builder: (ctx) {
                   return SafeArea(
-                    child: ProductDetailScreen(
-                        ctx.read<ProductsManager>().findById(productId)!),
+                    child: BookDetailScreen(
+                        ctx.read<BooksManager>().findById(bookId)!),
                   );
                 },
               );
             }
-            if (settings.name == EditProductScreen.routeName) {
-              final productId = settings.arguments as String?;
+            if (settings.name == EditBookScreen.routeName) {
+              final bookId = settings.arguments as String?;
               return MaterialPageRoute(
                 builder: (ctx) {
                   return SafeArea(
-                    child: EditProductScreen(
-                      productId != null
-                          ? ctx.read<ProductsManager>().findById(productId)
+                    child: EditBookScreen(
+                      bookId != null
+                          ? ctx.read<BooksManager>().findById(bookId)
                           : null,
                     ),
                   );

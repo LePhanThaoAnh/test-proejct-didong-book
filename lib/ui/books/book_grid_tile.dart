@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:myshop/ui/products/product_detail_screen.dart';
-import '../../../models/product.dart';
+import 'package:myshop/ui/books/book_detail_screen.dart';
+import '../../models/book.dart';
 import 'package:provider/provider.dart';
 import '../cart/cart_manager.dart';
-import 'products_manager.dart';
+import 'books_manager.dart';
 
-class ProductGridTile extends StatelessWidget {
-  const ProductGridTile(
-    this.product, {
+class BookGridTile extends StatelessWidget {
+  const BookGridTile(
+    this.book, {
     super.key,
   });
-  final Product product;
+  final Book book;
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
-        footer: ProductGridFooter(
-          product: product,
+        footer: BookGridFooter(
+          book: book,
           onFavoritePressed: () {
-            // Nghịch đảo giá trị isFavorite của product
-            context.read<ProductsManager>().toggleFavoriteStatus(product);
+            // Nghịch đảo giá trị isFavorite của book
+            context.read<BooksManager>().toggleFavoriteStatus(book);
           },
           onAddToCartPressed: () {
             // Đọc ra CartManager dùng context.read
             final cart = context.read<CartManager>();
-            cart.addItem(product);
+            cart.addItem(book);
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
@@ -38,8 +38,8 @@ class ProductGridTile extends StatelessWidget {
                   action: SnackBarAction(
                     label: 'UNDO',
                     onPressed: () {
-                      // Xóa product nếu undo
-                      cart.removeItem(product.id!);
+                      // Xóa book nếu undo
+                      cart.removeItem(book.id!);
                     },
                   ),
                 ),
@@ -49,12 +49,12 @@ class ProductGridTile extends StatelessWidget {
         child: GestureDetector(
           onTap: () {
             Navigator.of(context).pushNamed(
-              ProductDetailScreen.routeName,
-              arguments: product.id,
+              BookDetailScreen.routeName,
+              arguments: book.id,
             );
           },
           child: Image.network(
-            product.imageUrl,
+            book.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
@@ -63,13 +63,13 @@ class ProductGridTile extends StatelessWidget {
   }
 }
 
-class ProductGridFooter extends StatelessWidget {
-  final Product product;
+class BookGridFooter extends StatelessWidget {
+  final Book book;
   final void Function()? onFavoritePressed;
   final void Function()? onAddToCartPressed;
-  const ProductGridFooter({
+  const BookGridFooter({
     super.key,
-    required this.product,
+    required this.book,
     this.onFavoritePressed,
     this.onAddToCartPressed,
   });
@@ -79,7 +79,7 @@ class ProductGridFooter extends StatelessWidget {
     return GridTileBar(
       backgroundColor: Colors.black87,
       leading: ValueListenableBuilder<bool>(
-        valueListenable: product.isFavoriteListenable,
+        valueListenable: book.isFavoriteListenable,
         builder: (ctx, isFavorite, child) {
           return IconButton(
             icon: Icon(
@@ -91,7 +91,7 @@ class ProductGridFooter extends StatelessWidget {
         },
       ),
       title: Text(
-        product.title,
+        book.title,
         textAlign: TextAlign.center,
       ),
       trailing: IconButton(

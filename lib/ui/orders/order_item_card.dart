@@ -49,9 +49,9 @@ class OrderItemList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 4),
-      height: min(order.productCount * 20.0 + 10, 100),
+      height: min(order.bookCount * 20.0 + 10, 100),
       child: ListView(
-        children: order.products
+        children: order.books
             .map(
               (prod) => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -64,7 +64,7 @@ class OrderItemList extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${prod.quantity}x \$${prod.price}',
+                    '${prod.quantity}x ${prod.price} + vnđ ',
                     style: const TextStyle(
                       fontSize: 18,
                       color: Colors.grey,
@@ -95,7 +95,7 @@ class OrderSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       titleTextStyle: Theme.of(context).textTheme.titleLarge,
-      title: Text('\$${order.amount.toStringAsFixed(2)}'),
+      title: Text('${order.amount.toStringAsFixed(2)}' + ' vnđ'),
       subtitle: Text(
         DateFormat('dd/MM/yyyy hh:mm').format(order.dateTime),
       ),

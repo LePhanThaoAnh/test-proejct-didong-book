@@ -1,46 +1,46 @@
 import 'package:flutter/material.dart';
-import '../../models/product.dart';
-import 'edit_product_screen.dart';
-import 'products_manager.dart';
+import '../../models/book.dart';
+import 'edit_book_screen.dart';
+import 'books_manager.dart';
 import 'package:provider/provider.dart';
 
-class UserProductListTile extends StatelessWidget {
-  final Product product;
-  const UserProductListTile(
-    this.product, {
+class UserBookListTile extends StatelessWidget {
+  final Book book;
+  const UserBookListTile(
+    this.book, {
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(product.title),
+      title: Text(book.title),
       leading: CircleAvatar(
-        backgroundImage: NetworkImage(product.imageUrl),
+        backgroundImage: NetworkImage(book.imageUrl),
       ),
       trailing: SizedBox(
         width: 100,
         child: Row(
           children: <Widget>[
-            EditUserProductButton(
+            EditUserBookButton(
               onPressed: () {
-                // Chuyển đến trang EditProductScreen
+                // Chuyển đến trang EditBookScreen
                 Navigator.of(context).pushNamed(
-                  EditProductScreen.routeName,
-                  arguments: product.id,
+                  EditBookScreen.routeName,
+                  arguments: book.id,
                 );
               },
             ),
-            DeleteUserProductButton(
+            DeleteUserBookButton(
               onPressed: () {
-                // Đọc ra ProductsManager để xóa product
-                context.read<ProductsManager>().deleteProduct(product.id!);
+                // Đọc ra BooksManager để xóa book
+                context.read<BooksManager>().deleteBook(book.id!);
                 ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
                     const SnackBar(
                       content: Text(
-                        'Product deleted',
+                        'Book deleted',
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -54,8 +54,8 @@ class UserProductListTile extends StatelessWidget {
   }
 }
 
-class DeleteUserProductButton extends StatelessWidget {
-  const DeleteUserProductButton({
+class DeleteUserBookButton extends StatelessWidget {
+  const DeleteUserBookButton({
     super.key,
     this.onPressed,
   });
@@ -72,8 +72,8 @@ class DeleteUserProductButton extends StatelessWidget {
   }
 }
 
-class EditUserProductButton extends StatelessWidget {
-  const EditUserProductButton({
+class EditUserBookButton extends StatelessWidget {
+  const EditUserBookButton({
     super.key,
     this.onPressed,
   });

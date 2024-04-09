@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:myshop/ui/products/products_manager.dart';
-import 'products_grid.dart';
+import 'package:myshop/ui/books/books_manager.dart';
+import 'books_grid.dart';
 import '../shared/app_drawer.dart';
 import 'package:provider/provider.dart';
 import '../cart/cart_manager.dart';
 import 'top_right_badge.dart';
-import 'product_grid_tile.dart';
+import 'book_grid_tile.dart';
 import '../cart/cart_screen.dart';
 
 enum FilterOptions { favorites, all }
 
-class ProductsOverviewScreen extends StatefulWidget {
-  const ProductsOverviewScreen({super.key});
+class BooksOverviewScreen extends StatefulWidget {
+  const BooksOverviewScreen({super.key});
 
   @override
-  State<ProductsOverviewScreen> createState() => _ProductsOverviewScreenState();
+  State<BooksOverviewScreen> createState() => _BooksOverviewScreenState();
 }
 
-class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+class _BooksOverviewScreenState extends State<BooksOverviewScreen> {
   final _showOnlyFavorites = ValueNotifier<bool>(false);
-  late Future<void> _fetchProducts;
+  late Future<void> _fetchBooks;
 
   @override
   void initState() {
     super.initState();
-    _fetchProducts = context.read<ProductsManager>().fetchProducts();
+    _fetchBooks = context.read<BooksManager>().fetchBooks();
   }
 
   @override
@@ -33,7 +33,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       appBar: AppBar(
         title: const Text('MyShop'),
         actions: <Widget>[
-          ProductFilterMenu(
+          BookFilterMenu(
             onFilterSelected: (filter) {
               if (filter == FilterOptions.favorites) {
                 _showOnlyFavorites.value = true;
@@ -51,13 +51,13 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       ),
       drawer: const AppDrawer(),
       body: FutureBuilder(
-          future: _fetchProducts,
+          future: _fetchBooks,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return ValueListenableBuilder<bool>(
                   valueListenable: _showOnlyFavorites,
                   builder: (context, onlyFavorites, child) {
-                    return ProductGrid(onlyFavorites);
+                    return BookGrid(onlyFavorites);
                   });
             }
             return const Center(
@@ -69,8 +69,8 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   }
 }
 
-class ProductFilterMenu extends StatelessWidget {
-  const ProductFilterMenu({super.key, this.onFilterSelected});
+class BookFilterMenu extends StatelessWidget {
+  const BookFilterMenu({super.key, this.onFilterSelected});
 
   final void Function(FilterOptions selectedValue)? onFilterSelected;
   @override
@@ -105,7 +105,7 @@ class ShoppingCartButton extends StatelessWidget {
     return Consumer<CartManager>(
       builder: (ctx, cartManager, child) {
         return TopRightBadge(
-          data: cartManager.productCount,
+          data: cartManager.bookCount,
           child: IconButton(
             icon: const Icon(
               Icons.shopping_cart,

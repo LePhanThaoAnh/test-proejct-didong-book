@@ -2,30 +2,27 @@ import 'cart_item.dart';
 
 class OrderItem {
   final String? id; //id=null
-  final double amount;
-  final List<CartItem> products;
+  final int amount;
+  final List<CartItem> books;
   final DateTime dateTime;
 
-  int get productCount {
-    return products.length;
+  int get bookCount {
+    return books.length;
   }
 
   OrderItem({
     this.id,
     required this.amount,
-    required this.products,
+    required this.books,
     DateTime? dateTime,
   }) : dateTime = dateTime ?? DateTime.now();
 
   OrderItem copyWith(
-      {String? id,
-      double? amount,
-      List<CartItem>? products,
-      DateTime? dateTime}) {
+      {String? id, int? amount, List<CartItem>? books, DateTime? dateTime}) {
     return OrderItem(
       id: id ?? this.id,
       amount: amount ?? this.amount,
-      products: products ?? this.products,
+      books: books ?? this.books,
       dateTime: dateTime ?? this.dateTime,
     );
   }
@@ -33,7 +30,7 @@ class OrderItem {
   Map<String, dynamic> toJson() {
     return {
       'amount': amount,
-      'products': products,
+      'books': books,
       'dateTime': dateTime,
     };
   }
@@ -42,7 +39,7 @@ class OrderItem {
     return OrderItem(
       id: json['id'],
       amount: json['amount'],
-      products: json['products'],
+      books: json['books'],
       dateTime: json['dateTime'],
     );
   }
