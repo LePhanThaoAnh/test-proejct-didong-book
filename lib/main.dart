@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myshop/ui/books/find_book_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:myshop/ui/cart/cart_screen.dart';
 import 'package:myshop/ui/orders/orders_screen.dart';
@@ -117,6 +118,9 @@ class MyApp extends StatelessWidget {
                 ),
             UserBooksScreen.routeName: (ctx) => const SafeArea(
                   child: UserBooksScreen(),
+                ),
+            FindBookScreen.routeName: (ctx) => const SafeArea(
+                  child: FindBookScreen(),
                 ),
           },
           onGenerateRoute: (settings) {

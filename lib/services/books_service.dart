@@ -40,6 +40,57 @@ class BooksService extends FirebaseService {
     }
   }
 
+  // Future<Book?> findBookById(String id) async {
+  //   try {
+  //     final bookData = await httpFetch(
+  //       '$databaseUrl/books/$id.json?auth=$token',
+  //     ) as Map<String, dynamic>?;
+
+  //     if (bookData != null) {
+  //       final userFavoritesMap = await httpFetch(
+  //         '$databaseUrl/userFavorites/$userId.json?auth=$token',
+  //       ) as Map<String, dynamic>?;
+
+  //       final isFavorite = (userFavoritesMap == null)
+  //           ? false
+  //           : (userFavoritesMap[id] ?? false);
+
+  //       return Book.fromJson({
+  //         'id': id,
+  //         ...bookData,
+  //       }).copyWith(isFavorite: isFavorite);
+  //     } else {
+  //       return null;
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     return null;
+  //   }
+  // }
+
+  Future<List<Book>> searchBooksByName(String name) async {
+    final List<Book> searchResults = [];
+    try {
+      final booksMap = await httpFetch('$databaseUrl/books.json?auth=$token')
+          as Map<String, dynamic>?;
+
+      if (booksMap != null) {
+        booksMap.forEach((bookId, book) {
+          final Book currentBook = Book.fromJson({
+            'id': bookId,
+            ...book,
+          });
+          if (currentBook.title.toLowerCase().contains(name.toLowerCase())) {
+            searchResults.add(currentBook);
+          }
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+    return searchResults;
+  }
+
   Future<Book?> addBook(Book book) async {
     try {
       final newBook = await httpFetch(

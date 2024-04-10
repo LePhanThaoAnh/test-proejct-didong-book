@@ -5,6 +5,7 @@ import '../auth/auth_manager.dart';
 import '../orders/orders_screen.dart';
 import '../cart/cart_screen.dart';
 import '../books/user_books_screen.dart';
+import '../books/find_book_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -24,6 +25,15 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Shop'),
             onTap: () {
               Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.search),
+            title: const Text('Search Books'),
+            onTap: () {
+              Navigator.of(context)
+                  .pushReplacementNamed(FindBookScreen.routeName);
             },
           ),
           const Divider(),

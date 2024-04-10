@@ -37,7 +37,6 @@ class BooksManager with ChangeNotifier {
   Future<void> fetchBooks() async {
     _items = await _booksService.fetchBooks();
     notifyListeners();
-    
   }
 
   Future<void> fetchUserBooks() async {
@@ -45,7 +44,6 @@ class BooksManager with ChangeNotifier {
       filteredByUser: true,
     );
     notifyListeners();
-    
   }
 
   Future<void> addBook(Book book) async {
@@ -53,6 +51,15 @@ class BooksManager with ChangeNotifier {
     if (newBook != null) {
       _items.add(newBook);
       notifyListeners();
+    }
+  }
+
+  Future<List<Book>> searchBooksByName(String name) async {
+    try {
+      return await _booksService.searchBooksByName(name);
+    } catch (e) {
+      print(e);
+      return [];
     }
   }
 
