@@ -6,6 +6,7 @@ import '../cart/cart_screen.dart';
 import 'books_manager.dart';
 import 'package:provider/provider.dart';
 import 'top_right_badge.dart';
+import 'package:intl/intl.dart';
 
 class BookDetailScreen extends StatefulWidget {
   BookDetailScreen(
@@ -60,78 +61,140 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
       drawer: const AppDrawer(),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             SizedBox(
               height: 300,
               width: double.infinity,
               child: Image.network(widget.book.imageUrl, fit: BoxFit.cover),
             ),
-            const SizedBox(height: 10),
-            Text(
-              '${widget.book.price}' + ' vnđ',
-              style: const TextStyle(color: Colors.grey, fontSize: 20),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Số lượng:' + '${widget.book.quantity}',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Tác giả: ' + widget.book.author,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            Text(
-              'Thể loại: ' + widget.book.category,
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              width: double.infinity,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Text(
-                widget.book.description,
-                textAlign: TextAlign.center,
-                softWrap: true,
-                style: Theme.of(context).textTheme.titleLarge,
+                widget.book.title,
+                style: Theme.of(context).textTheme.displaySmall,
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                ElevatedButton(
-                    onPressed: _decreaseCount, child: const Icon(Icons.remove)),
-                Text(
-                  '$_count',
-                ),
-                ElevatedButton(
-                    onPressed: _increaseCount, child: const Icon(Icons.add)),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Tác giả: ${widget.book.author}',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Text(
+                    'Giá: ${NumberFormat.currency(locale: 'vi_VN', symbol: 'đ').format(widget.book.price)}',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
+              ),
             ),
-            ShoppingButton(
-              onAddToCartPressed: () {
-                // Đọc ra CartManager dùng context.read
-                final cart = context.read<CartManager>();
-                cart.addItem(widget.book);
-                ScaffoldMessenger.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    SnackBar(
-                      content: const Text(
-                        'Item added to cart',
-                      ),
-                      duration: const Duration(seconds: 2),
-                      action: SnackBarAction(
-                        label: 'UNDO',
-                        onPressed: () {
-                          // Xóa book nếu undo
-                          cart.removeItem(widget.book.id!);
-                        },
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Thể loại: ${widget.book.category} ',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Text(
+                    'Số lượng: ${widget.book.quantity}',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Giới thiệu: ${widget.book.description}',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    onPressed: _decreaseCount,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[200],
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.zero, // Đặt borderRadius là zero
+                        side: BorderSide(color: Colors.black, width: 1),
                       ),
                     ),
-                  );
-              },
+                    child: Icon(
+                      Icons.remove,
+                      size: 24,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200], // Màu nền xám
+                      borderRadius:
+                          BorderRadius.zero, // Đặt borderRadius là zero
+                      border:
+                          Border.all(color: Colors.black, width: 1), // Border
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: Text(
+                      '$_count',
+                      style: TextStyle(fontSize: 19),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _increaseCount,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[200],
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.zero, // Đặt borderRadius là zero
+                        side: BorderSide(color: Colors.black, width: 1),
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.add,
+                      size: 24,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
             ),
+            Center(
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey[200], // Màu nền xám
+                  border: Border.all(color: Colors.grey[300]!), // Màu border
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    // Code xử lý khi nhấn nút IconButton
+                  },
+                  icon: Icon(
+                    Icons.shopping_cart,
+                    size: 30,
+                    color: Colors.black, // Màu của icon
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -179,28 +242,6 @@ class HomeButton extends StatelessWidget {
         Icons.shop,
       ),
       onPressed: onPressed,
-    );
-  }
-}
-
-class ShoppingButton extends StatelessWidget {
-  const ShoppingButton({
-    super.key,
-    this.onPressed,
-    this.onAddToCartPressed,
-  });
-
-  final void Function()? onAddToCartPressed;
-  final void Function()? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(
-        Icons.shopping_cart,
-      ),
-      onPressed: onAddToCartPressed,
-      color: Theme.of(context).colorScheme.secondary,
     );
   }
 }
